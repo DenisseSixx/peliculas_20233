@@ -1,34 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:peliculas_20233/models/movie.dart';
 
 class MovieSlider extends StatelessWidget {
-  const MovieSlider({super.key});
+   final List<Movie> movies;
+  final String? title;
+  const MovieSlider({super.key, required this.movies, this.title});
 
- @override
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Container(
       width: double.infinity,
-      height: size.height * .30,
-      color: Colors.black,
+      height: size.height * 0.30,
+      color: Colors.lightBlue,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                'Populares',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color:  Colors.white,
-                ),
-              )),
-              Expanded(child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 20,
-                itemBuilder: (_, index) =>const _MoviePoster(),
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              'Populares',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
-              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: movies.length,
+              itemBuilder: (_, int index) => _MoviePoster(movie: movies[index]),
+            ),
+          )
         ],
       ),
     );
@@ -36,35 +40,36 @@ class MovieSlider extends StatelessWidget {
 }
 
 class _MoviePoster extends StatelessWidget {
-  const _MoviePoster({super.key});
+  final Movie movie;
+  const _MoviePoster({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 180,
       height: 250,
-      color: Color.fromARGB(255, 62, 207, 135),
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(context, 'details',arguments: ''),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: const FadeInImage(
-                placeholder: AssetImage('assets/no-image.jpg'),
-                image: AssetImage('assets/no-image.jpg'),
-                width: 180,
-                height: 100,
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+       child: Column(children: [
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, 'details', arguments: ''),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: FadeInImage(
+              placeholder: AssetImage('assets/no-image.jpg'),
+              //image: AssetImage('assets/no-image.jpg'),
+              image: NetworkImage(movie.fullPosterImg),
+              width: 180,
+              height: 100,
               ),
             ),
           ),
-          const SizedBox(height: 8,),
-          const Text('Quiero mover el bote, me gusta.. mueve! ',
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-          ),
+          const SizedBox(height: 5),
+          Text(
+            movie.title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          )
         ],
       ),
     );
